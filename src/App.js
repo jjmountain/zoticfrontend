@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react'
+import { Header } from './components/Header'
+import { motion } from 'framer-motion'
+import { Outlet, Link } from 'react-router-dom'
+import { UserContext } from './UserContext'
+import Login from './routes/login'
 
-function App() {
+export default function App() {
+  const { user, setuser } = useContext(UserContext)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2 }}
+      >
+        <Header />
+        <div className="w-full flex justify-center">
+          <Link className="" to="/articles">
+            Articles
+          </Link>
+        </div>
+        <Outlet />
+      </motion.div>
+    </>
+  )
 }
-
-export default App;
