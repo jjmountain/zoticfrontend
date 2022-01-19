@@ -7,8 +7,9 @@ export default function Article() {
   const params = useParams()
 
   useEffect(() => {
-    const articleEndpoint = `http://localhost:3000/articles/${params.id}.json`
-    fetch(articleEndpoint, {
+    console.log(process.env.NODE_ENV === 'development')
+    const endpointBase = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://powerful-reaches-57137.herokuapp.com'
+    fetch(`${endpointBase}/articles/${params.id}.json`, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

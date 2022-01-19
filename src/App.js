@@ -8,6 +8,17 @@ import Login from './routes/login'
 export default function App() {
   const { user, setuser } = useContext(UserContext)
 
+  const articles = () => (
+    <>
+    <Header />
+    <div className="w-full flex justify-center">
+    <Link className="" to="/articles">
+      Articles
+    </Link>
+  </div>
+  </>
+  )
+
   return (
     <>
       <motion.div
@@ -15,14 +26,11 @@ export default function App() {
         animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       >
-        <Header />
-        <div className="w-full flex justify-center">
-          <Link className="" to="/articles">
-            Articles
-          </Link>
-        </div>
+        { window.location.pathname === '/word-me-up' ? '' :
+        {articles}
+        }
         <Outlet />
       </motion.div>
-    </>
+    </> 
   )
 }

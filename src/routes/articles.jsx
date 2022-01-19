@@ -12,11 +12,8 @@ export default function Articles() {
 
 
   useEffect( () => {
-    const articlesEndpoint = 'http://localhost:3000/articles'
-    fetch(articlesEndpoint, { headers: { 
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-     }})
+    const endpointBase = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://powerful-reaches-57137.herokuapp.com/'
+    fetch(`${endpointBase}/articles`)
       .then((data) => {
         if (data.ok) {
           return data.json()

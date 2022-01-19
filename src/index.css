@@ -48,6 +48,6 @@
   }
 
   body {
-    @apply bg-zinc-50 mb-12;
+    @apply bg-zinc-50;
   }
 }
