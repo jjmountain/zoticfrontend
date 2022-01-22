@@ -1,13 +1,32 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import React from "react";
-import { motion } from "framer-motion";
+
+const ROWONE = [
+  "Q",
+  "W",
+  "E",
+  "R",
+  "T",
+  "Y",
+  "U",
+  "I",
+  "O",
+  "P",
+];
+
+const ROWTWO = ["A", "S", "D", "F", "G", "H", "J", "K", "L"];
+
+const ROWTHREE = ["Z", "X", "C", "V", "B", "N", "M"];
+
+const validLetters = [ ...ROWONE, ...ROWTWO, ...ROWTHREE ]
 
 const Letter = () => {
   return (
     <input
       type="text"
       className="text-gray-50 text-3xl font-bold border-2 border-gray-300 h-16 w-16 flex justify-center items-center"
+
+
     />
   );
 };
@@ -23,6 +42,17 @@ const LetterRow = () => {
 };
 
 function GameBox() {
+
+  const handleKeyUp = () => {
+    document.addEventListener('keyup', (e) => {
+      if (validLetters.includes(e.key.toUpperCase())) {
+        console.log(e.key)
+      }
+    })
+  }
+
+  handleKeyUp();
+  
   return (
     <div className="flex justify-center grid grid-rows-5 gap-1">
       {Array.from(Array(6).keys()).map((number) => (
@@ -57,32 +87,16 @@ function KeyboardLetter(props) {
 }
 
 function KeyboardLetters() {
-  const keyboardLettersRowOne = [
-    "Q",
-    "W",
-    "E",
-    "R",
-    "T",
-    "Y",
-    "U",
-    "I",
-    "O",
-    "P",
-  ];
-
-  const keyboardLettersRowTwo = ["A", "S", "D", "F", "G", "H", "J", "K", "L"];
-
-  const keyboardLettersRowThree = ["Z", "X", "C", "V", "B", "N", "M"];
 
   return (
     <>
       <div className="w-full flex justify-center">
-        {keyboardLettersRowOne.map((letter) => (
+        {ROWONE.map((letter) => (
           <KeyboardLetter key={letter} letter={letter} />
         ))}
       </div>
       <div className="w-full flex justify-center">
-        {keyboardLettersRowTwo.map((letter) => (
+        {ROWTWO.map((letter) => (
           <KeyboardLetter key={letter} letter={letter} />
         ))}
       </div>
@@ -90,7 +104,7 @@ function KeyboardLetters() {
         <div className="w-12 h-16 text-sm font-bold bg-gray-200 flex-1 flex items-center justify-center rounded-md m-1">
           ENTER
         </div>
-        {keyboardLettersRowThree.map((letter) => (
+        {ROWTHREE.map((letter) => (
           <KeyboardLetter key={letter} letter={letter} />
         ))}
         <div className="w-12 h-16 text-sm font-bold bg-gray-200 flex-1 flex items-center justify-center rounded-md m-1">
