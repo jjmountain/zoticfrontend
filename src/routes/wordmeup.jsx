@@ -9,11 +9,9 @@ const ROWTHREE = ["Z", "X", "C", "V", "B", "N", "M"];
 
 const validLetters = [...ROWONE, ...ROWTWO, ...ROWTHREE];
 
-const GameContext = React.createContext();
+const WordsContext = React.createContext();
 
 const Letter = () => {
-  const letterValue = useContext(GameContext);
-  console.log(letterValue);
   return (
     <div
       type="text"
@@ -33,6 +31,7 @@ const LetterRow = () => {
 };
 
 function GameBox() {
+  const letterValue = useContext(WordsContext);
   return (
     <div className="flex justify-center grid grid-rows-5 gap-1 m-4">
       {Array.from(Array(6).keys()).map((number) => (
@@ -103,26 +102,48 @@ function Keyboard() {
 }
 
 export default function WordMeUp() {
-  const [gameState, setGameState] = useState([{ answer: "hello", letter: "" }]);
+  const [gameState, setGameState] = useState({
+    answer: "hello",
+    words: ["", "", "", "", "", ""],
+  });
+
+  const [wordState, setWordState] = useState(["", "", "", "", "", ""]);
+
+  const currentWords = useRef(["", "", "", "", ""]);
+
+  const currentIndex = useRef(0);
+
+  ///
 
   const handleKeyUp = () => {
     document.addEventListener("keyup", (e) => {
-      if (validLetters.includes(e.key.toUpperCase())) {
-        setGameState(e.key);
+      if (
+        validLetters.includes(e.key.toUpperCase()) &&
+        currentWords.current[currentIndex.current].length < 5
+      ) {
+        currentWords.current[currentIndex.current] += e.key;
+        console.log(currentWords.current[currentIndex.current].length);
+        setWordState([...currentWords.current]);
+      } else if (e.key === "Backspace") {
+        const updatedWord = currentWords.current[currentIndex.current].slice(
+          0,
+          -1
+        );
+        currentWords.current[currentIndex.current] = updatedWord;
+        setWordState([...currentWords.current]);
       }
     });
   };
 
-  handleKeyUp();
+  useEffect(() => handleKeyUp(), []);
 
-  useEffect(() => {});
   return (
-    <GameContext.Provider value={gameState}>
+    <WordsContext.Provider value={wordState}>
       <div className="max-w-3xl mx-auto h-screen flex flex-col justify-between py-4">
         <Header />
         <GameBox />
         <Keyboard />
       </div>
-    </GameContext.Provider>
+    </WordsContext.Provider>
   );
 }
