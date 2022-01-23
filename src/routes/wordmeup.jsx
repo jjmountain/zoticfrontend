@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { motion } from "framer-motion";
 import React from "react";
 
 const ROWONE = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
@@ -14,10 +15,26 @@ const WordsContext = React.createContext();
 const Letter = (props) => {
   return (
     <div
-      type="text"
-      className="text-3xl font-bold border-2 border-gray-300 h-14 w-14 flex grow shrink justify-center items-center"
+      className={`${
+        props.letter
+          ? "h-14 w-14 flex grow shrink"
+          : "border border-gray-300 h-14 w-14 flex grow shrink"
+      }`}
     >
-      {props.letter && props.letter}
+      {props.letter && (
+        <motion.div
+          className="text-3xl border-2 border-gray-500 font-bold h-14 w-14 flex grow shrink justify-center items-center"
+          animate={{ scale: 1 }}
+          transition={{
+            ease: "easeIn",
+            type: "spring",
+            bounce: 0.65,
+          }}
+          initial={{ scale: 0 }}
+        >
+          {props.letter}
+        </motion.div>
+      )}
     </div>
   );
 };
@@ -53,7 +70,7 @@ function Header() {
       className="mx-auto w-96"
     >
       <h1 className="mt-1 text-4xl text-black text-center font-bold uppercase tracking-wider">
-        Word Me Up
+        Wordle
       </h1>
     </div>
   );
