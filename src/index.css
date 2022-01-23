@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply h-screen;
+  }
   p {
     @apply mt-4 text-gray-700 leading-relaxed font-normal;
   }
