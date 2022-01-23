@@ -11,31 +11,33 @@ const validLetters = [...ROWONE, ...ROWTWO, ...ROWTHREE];
 
 const WordsContext = React.createContext();
 
-const Letter = () => {
+const Letter = (props) => {
   return (
     <div
       type="text"
-      className="text-gray-50 text-3xl font-bold border-2 border-gray-300 h-14 w-14 flex grow shrink justify-center items-center"
-    />
+      className="text-3xl font-bold border-2 border-gray-300 h-14 w-14 flex grow shrink justify-center items-center"
+    >
+      {props.letter && props.letter}
+    </div>
   );
 };
 
-const LetterRow = () => {
+const LetterRow = (props) => {
   return (
     <div className="grid grid-cols-5 gap-x-2 gap-y-4">
-      {Array.from(Array(5).keys()).map((number) => (
-        <Letter key={number} />
+      {Array.from(Array(5).keys()).map((number, index) => (
+        <Letter key={number} letter={props.letters[index]} />
       ))}
     </div>
   );
 };
 
 function GameBox() {
-  const letterValue = useContext(WordsContext);
+  const lettersValue = useContext(WordsContext);
   return (
     <div className="flex justify-center grid grid-rows-5 gap-1 m-4">
-      {Array.from(Array(6).keys()).map((number) => (
-        <LetterRow key={number} />
+      {Array.from(Array(6).keys()).map((number, index) => (
+        <LetterRow key={number} letters={lettersValue[index]} />
       ))}
     </div>
   );
@@ -109,7 +111,7 @@ export default function WordMeUp() {
 
   const [wordState, setWordState] = useState(["", "", "", "", "", ""]);
 
-  const currentWords = useRef(["", "", "", "", ""]);
+  const currentWords = useRef(["", "", "", "", "", ""]);
 
   const currentIndex = useRef(0);
 
@@ -122,7 +124,6 @@ export default function WordMeUp() {
         currentWords.current[currentIndex.current].length < 5
       ) {
         currentWords.current[currentIndex.current] += e.key;
-        console.log(currentWords.current[currentIndex.current].length);
         setWordState([...currentWords.current]);
       } else if (e.key === "Backspace") {
         const updatedWord = currentWords.current[currentIndex.current].slice(
