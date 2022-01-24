@@ -1,33 +1,31 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import React from 'react'
-import { motion } from 'framer-motion'
-import { useParams } from 'react-router-dom'
-
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import React from "react";
+import { motion } from "framer-motion";
+import { useParams } from "react-router-dom";
 
 export default function Articles() {
-  const [articles, setArticles] = useState([])
+  const [articles, setArticles] = useState([]);
 
-  const params = useParams()
-
-
-  useEffect( () => {
-    const endpointBase = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://powerful-reaches-57137.herokuapp.com/'
+  useEffect(() => {
+    const endpointBase =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : "https://powerful-reaches-57137.herokuapp.com/";
     fetch(`${endpointBase}/articles`)
       .then((data) => {
         if (data.ok) {
-          return data.json()
+          return data.json();
         }
-        throw new Error('Network error.')
+        throw new Error("Network error.");
       })
-      .then((data) => setArticles(data))
-  }, [])
-
+      .then((data) => setArticles(data));
+  }, []);
 
   return (
     <div className="mt-12 max-w-lg mx-auto grid gap-x-20 gap-y-14 lg:grid-cols-3 lg:max-w-none">
       {articles.map((article) => {
-        const date = new Date(article.published_at).toDateString()
+        const date = new Date(article.published_at).toDateString();
         return (
           <motion.div
             initial={{ opacity: 0.8 }}
@@ -49,7 +47,7 @@ export default function Articles() {
                     // src={article.image_url}
                     style={{
                       backgroundImage: `linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(${article.image_url})`,
-                      backgroundSize: 'cover',
+                      backgroundSize: "cover",
                     }}
                     alt=""
                   >
@@ -86,7 +84,7 @@ export default function Articles() {
                   </div>
                   <div>
                     <section className="mt-4 text-sm font-medium text-gray-900">
-                      By {article.author} for{' '}
+                      By {article.author} for{" "}
                       <a
                         href={article.source_url}
                         className="hover:underline"
@@ -100,8 +98,8 @@ export default function Articles() {
               </div>
             </div>
           </motion.div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

@@ -70,7 +70,7 @@ function Header() {
       className="mx-auto w-96"
     >
       <h1 className="mt-1 text-4xl text-black text-center font-bold uppercase tracking-wider">
-        Wordle
+        Wordle But it's...
       </h1>
     </div>
   );
