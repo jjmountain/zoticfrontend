@@ -39,7 +39,11 @@
   }
 
   a {
-    @apply font-light text-pink-600 underline decoration-pink-400 hover:opacity-100;
+    @apply decoration-1 font-light underline decoration-pink-400 hover:opacity-100 underline-offset-8;
+  }
+
+  a:hover {
+    @apply decoration-1 text-red-400 font-light underline decoration-pink-400 hover:opacity-100 underline-offset-8;
   }
 
   figure {
