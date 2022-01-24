@@ -16,21 +16,20 @@ export default function AppRouter() {
       <UserContext.Provider value={value}>
         <LoadingContext.Provider value={loadingValue}>
           <Routes>
-            <Route path="/" element={<App />}>
-              <Route path="articles">
-                <Route index element={<Articles />} />
-                <Route path=":id" element={<Article />} />
-              </Route>
-              <Route path="word-me-up" element={<WordMeUp />} />
-              <Route
-                path="*"
-                element={
-                  <main style={{ padding: "1rem" }}>
-                    <p>There's nothing here!</p>
-                  </main>
-                }
-              />
+            <Route path="/" element={<App />} />
+            <Route path="word-me-up" element={<WordMeUp />} />
+            <Route path="articles">
+              <Route index element={<Articles />} />
+              <Route path=":id" element={<Article />} />
             </Route>
+            <Route
+              path="*"
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>There's nothing here!</p>
+                </main>
+              }
+            />
           </Routes>
         </LoadingContext.Provider>
       </UserContext.Provider>
