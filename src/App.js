@@ -6,9 +6,7 @@ import { UserContext } from "./UserContext";
 import Login from "./routes/login";
 
 export default function App() {
-  const { user, setuser } = useContext(UserContext);
-
-  const articles = () => (
+  const articles = (
     <>
       <Header />
       <div className="w-full flex justify-center">
@@ -21,8 +19,10 @@ export default function App() {
 
   return (
     <>
-      {window.location.pathname === "/word-me-up" ? "" : { articles }}
-      <Outlet />
+      <div className="h-screen">
+        {window.location.pathname === "/word-me-up" ? "" : articles}
+        <Outlet />
+      </div>
     </>
   );
 }
