@@ -58,3 +58,10 @@
     @apply bg-zinc-50;
   }
 }
+
+@layer utilities {
+  .back-visibility-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}

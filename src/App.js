@@ -40,14 +40,22 @@ export default function App() {
             for a crytpo-trading startup
           </li>
           <li className="text-lg">
-            I made this <Link to="/word-me-up">Wordle</Link> clone with React
+            I made my own version of <Link to="/word-me-up">Wordle</Link> 🤔
           </li>
         </ul>
 
         <h1 className="text-slate-900">Some other stuff</h1>
         <ul className="list-disc pl-6">
           <li className="text-lg my-2">A list of my favourite Korean films.</li>
-          <li className="text-lg"></li>
+          <li className="text-lg">
+            <a target="_blank" href="https://icons8.com/icon/36840/parrot">
+              Parrot
+            </a>{" "}
+            icon by{" "}
+            <a target="_blank" href="https://icons8.com">
+              Icons8
+            </a>
+          </li>
         </ul>
       </div>
     </>

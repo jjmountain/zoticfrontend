@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { usePrevious } from "../hooks/usePrevious";
+
 import { motion } from "framer-motion";
 import React from "react";
 
@@ -11,6 +13,27 @@ const ROWTHREE = ["Z", "X", "C", "V", "B", "N", "M"];
 const validLetters = [...ROWONE, ...ROWTWO, ...ROWTHREE];
 
 const WordsContext = React.createContext();
+const AnswerContext = React.createContext();
+const AttemptsContext = React.createContext();
+
+// const Letter = (props) => {
+//   return (
+//     <div className="flip-card border-2 border-gray-500 h-14 w-14 flex grow shrink justify-center items-center opacity-0">
+//       <motion.div
+//         animate={{ rotateX: 180 }}
+//         className="flip-card-inner relative w-full h-full"
+//       >
+//         <div className="flip-card-front absolute">{props.letter}</div>
+//         <motion.div
+//           animate={{ rotateX: 180 }}
+//           className="flip-card-back absolute h-full w-full bg-green-700 back-visibility-hidden"
+//         >
+//           {props.letter}
+//         </motion.div>
+//       </motion.div>
+//     </div>
+//   );
+// };
 
 const Letter = (props) => {
   return (
@@ -23,7 +46,7 @@ const Letter = (props) => {
     >
       {props.letter && (
         <motion.div
-          className="text-3xl border-2 border-gray-500 font-bold h-14 w-14 flex grow shrink justify-center items-center"
+          className="border-2 border-gray-500 h-14 w-14 flex grow shrink justify-center items-center"
           animate={{ scale: 1 }}
           transition={{
             ease: "easeIn",
@@ -32,7 +55,22 @@ const Letter = (props) => {
           }}
           initial={{ scale: 0 }}
         >
-          {props.letter}
+          {props.attempted ? (
+            <div className="flip-card border-2 border-gray-500 h-14 w-14 flex grow shrink justify-center items-center opacity-0">
+              <motion.div
+                animate={{ rotateX: 180 }}
+                className="flip-card-inner relative w-full h-full"
+              >
+                <div className="flip-card-front absolute"></div>
+                <motion.div
+                  animate={{ rotateX: 180 }}
+                  className="flip-card-back absolute h-full w-full bg-green-700 back-visibility-hidden"
+                ></motion.div>
+              </motion.div>
+            </div>
+          ) : (
+            <span className="text-3xl font-bold"> {props.letter}</span>
+          )}
         </motion.div>
       )}
     </div>
@@ -43,7 +81,12 @@ const LetterRow = (props) => {
   return (
     <div className="grid grid-cols-5 gap-x-2 gap-y-4">
       {Array.from(Array(5).keys()).map((number, index) => (
-        <Letter key={number} letter={props.letters[index]} />
+        <Letter
+          key={number}
+          letter={props.letters[index]}
+          answerLetter={props.answer[index]}
+          attempted={props.attempted}
+        />
       ))}
     </div>
   );
@@ -51,10 +94,18 @@ const LetterRow = (props) => {
 
 function GameBox() {
   const lettersValue = useContext(WordsContext);
+  const answerValue = useContext(AnswerContext);
+  const attemptsValue = useContext(AttemptsContext);
+
   return (
     <div className="flex justify-center grid grid-rows-5 gap-1 m-4">
       {Array.from(Array(6).keys()).map((number, index) => (
-        <LetterRow key={number} letters={lettersValue[index]} />
+        <LetterRow
+          key={number}
+          answer={answerValue}
+          letters={lettersValue[index]}
+          attempted={attemptsValue[index]}
+        />
       ))}
     </div>
   );
@@ -121,18 +172,21 @@ function Keyboard() {
 }
 
 export default function WordMeUp() {
-  const [gameState, setGameState] = useState({
-    answer: "hello",
-    words: ["", "", "", "", "", ""],
-  });
+  const [answerState, setAnswerState] = useState("hello");
 
   const [wordState, setWordState] = useState(["", "", "", "", "", ""]);
 
   const currentWords = useRef(["", "", "", "", "", ""]);
 
-  const currentIndex = useRef(0);
+  const [attemptsState, setAttemptsState] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
-  ///
+  const currentIndex = useRef(0);
 
   const handleKeyUp = () => {
     document.addEventListener("keyup", (e) => {
@@ -149,19 +203,44 @@ export default function WordMeUp() {
         );
         currentWords.current[currentIndex.current] = updatedWord;
         setWordState([...currentWords.current]);
+      } else if (
+        e.key === "Enter" &&
+        currentWords.current[currentIndex.current].length === 5
+      ) {
+        CheckWord();
       }
     });
   };
 
+  const prevAttempts = usePrevious(attemptsState);
+
+  function CheckWord() {
+    // make an array where up to the current index everything is true
+    const wordsComplete = currentWords.current.map(
+      (word, index) => index <= currentIndex.current
+    );
+    setAttemptsState(wordsComplete);
+    // setAttemptsState(prevAttempts[currentIndex.current]);
+    if (currentWords.current[currentIndex.current] === answerState) {
+      console.log("Correct!");
+    } else {
+      console.log("Wrong!", currentWords);
+    }
+  }
+
   useEffect(() => handleKeyUp(), []);
 
   return (
-    <WordsContext.Provider value={wordState}>
-      <div className="max-w-3xl mx-auto h-screen flex flex-col justify-between py-4">
-        <Header />
-        <GameBox />
-        <Keyboard />
-      </div>
-    </WordsContext.Provider>
+    <AnswerContext.Provider value={answerState}>
+      <WordsContext.Provider value={wordState}>
+        <AttemptsContext.Provider value={attemptsState}>
+          <div className="max-w-3xl mx-auto h-screen flex flex-col justify-between py-4">
+            <Header />
+            <GameBox />
+            <Keyboard />
+          </div>
+        </AttemptsContext.Provider>
+      </WordsContext.Provider>
+    </AnswerContext.Provider>
   );
 }
