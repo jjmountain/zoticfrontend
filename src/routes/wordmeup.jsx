@@ -54,20 +54,16 @@ const Letter = (props) => {
             bounce: 0.65,
           }}
           initial={{ scale: 0 }}
+          style={{
+            backfaceVisibility: "hidden",
+            zIndex: 10,
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
         >
           {props.attempted ? (
-            <div className="flip-card border-2 border-gray-500 h-14 w-14 flex grow shrink justify-center items-center opacity-0">
-              <motion.div
-                animate={{ rotateX: 180 }}
-                className="flip-card-inner relative w-full h-full"
-              >
-                <div className="flip-card-front absolute"></div>
-                <motion.div
-                  animate={{ rotateX: 180 }}
-                  className="flip-card-back absolute h-full w-full bg-green-700 back-visibility-hidden"
-                ></motion.div>
-              </motion.div>
-            </div>
+            <div></div>
           ) : (
             <span className="text-3xl font-bold"> {props.letter}</span>
           )}
@@ -78,8 +74,24 @@ const Letter = (props) => {
 };
 
 const LetterRow = (props) => {
+  const container = {
+    // hidden: { opacity: 1 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.5,
+        delayChildren: 0.5,
+      },
+    },
+  };
+
   return (
-    <div className="grid grid-cols-5 gap-x-2 gap-y-4">
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="grid grid-cols-5 gap-x-2 gap-y-4"
+    >
       {Array.from(Array(5).keys()).map((number, index) => (
         <Letter
           key={number}
@@ -88,7 +100,7 @@ const LetterRow = (props) => {
           attempted={props.attempted}
         />
       ))}
-    </div>
+    </motion.div>
   );
 };
 
