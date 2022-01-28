@@ -16,142 +16,55 @@ const WordsContext = React.createContext();
 const AnswerContext = React.createContext();
 const AttemptsContext = React.createContext();
 
-const Front = (props) => {
-  const itemSpinVariants = {
-    hidden: {
-      rotateX: 0,
-    },
-    show: {
-      rotateX: 180,
-      transition: {
-        type: "spring",
-        duration: 1,
-        bounce: 0.3,
-        delay: 0.5 * props.index,
-      },
-    },
+const LetterBack = (props) => {
+  const letterState = () => {
+    if (props.letter && props.attempted) {
+      return "flip";
+    } else if (props.letter) {
+      return "show";
+    } else {
+      return "hidden";
+    }
   };
-  return (
-    <motion.div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backfaceVisibility: "hidden",
-        zIndex: 10,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      variants={itemSpinVariants}
-    >
-      {props.letter}
-    </motion.div>
-  );
-};
 
-const Back = (props) => {
   const itemCounterSpinVariants = {
     hidden: {
-      rotateX: 180,
+      opacity: 0,
     },
-    show: {
+    flip: {
       rotateX: 0,
+      opacity: 1,
       transition: {
-        type: "spring",
-        duration: 1,
-        bounce: 0.3,
-        delay: 0.5 * props.index,
+        duration: 0.6,
       },
     },
   };
-  return (
-    <motion.div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        rotateX: 180,
-        color: "white",
-        backfaceVisibility: "hidden",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      variants={itemCounterSpinVariants}
-    >
-      <motion.span
-        animate={{ rotateX: 180, backgroundColor: "#6aaa64" }}
-        transition={{ delay: 0.5 * props.index }}
-      >
-        {" "}
-        {props.letter}{" "}
-      </motion.span>
-    </motion.div>
-  );
-};
 
-const InnerTile = (props) => {
   return (
     <>
-      <Front letter={props.letter} />
-      <Back letter={props.letter} />
+      <motion.div
+        className="h-14 w-14"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          rotateX: 180,
+          backgroundColor: "#6aaa64",
+          color: "white",
+          backfaceVisibility: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        variants={itemCounterSpinVariants}
+        animate={letterState}
+      >
+        <motion.span animate={{ rotateX: 180 }}>
+          {" "}
+          {props.attempted && props.letter}{" "}
+        </motion.span>
+      </motion.div>
     </>
-  );
-};
-
-const OuterTile = (props) => {
-  const rowNotAttempted = {
-    hidden: {
-      scale: 0,
-    },
-    show: {
-      scale: 1,
-      transition: { type: "spring", duration: 0.5, bounce: 0.3 },
-    },
-  };
-
-  const rowAttempted = {
-    hidden: {
-      rotateX: 0,
-    },
-    show: {
-      rotateX: 180,
-      scale: 1,
-      transition: {
-        type: "spring",
-        duration: 0.8,
-        bounce: 0.3,
-        delay: 0.5 * props.index,
-      },
-    },
-  };
-
-  return (
-    <motion.div
-      className={`${
-        props.attempted
-          ? "h-14 w-14 flex grow shrink justify-center items-center text-black relative"
-          : "border-2 border-gray-500 h-14 w-14 flex grow shrink justify-center items-center text-black relative"
-      }`}
-      animate="show"
-      initial="hidden"
-      variants={props.attempted ? rowAttempted : rowNotAttempted}
-    >
-      {props.attempted ? (
-        <InnerTile
-          letter={props.letter}
-          attempted={props.attempted}
-          index={props.index}
-        />
-      ) : (
-        props.letter
-      )}
-    </motion.div>
   );
 };
 
@@ -166,8 +79,6 @@ const Letter = (props) => {
     }
   };
 
-  console.log(letterState());
-
   const letterVariant = {
     hidden: {
       scale: 0,
@@ -177,7 +88,7 @@ const Letter = (props) => {
       scale: 1,
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: 0.5,
       },
     },
     flip: {
@@ -194,13 +105,15 @@ const Letter = (props) => {
       <motion.div
         variants={letterVariant}
         animate={letterState}
+        // style={{ backfaceVisibility: "hidden" }}
         className={`${
           props.letter
-            ? "border border-gray-700 h-full w-full flex justify-center items-center grow shrink relative text-xl"
+            ? "h-full w-full flex justify-center items-center grow shrink relative text-xl"
             : "border border-gray-300 h-full w-full flex grow shrink relative"
         }`}
       >
         {props.letter}
+        <LetterBack letter={props.letter} attempted={props.attempted} />
       </motion.div>
     </div>
   );
