@@ -23,7 +23,12 @@ const Front = (props) => {
     },
     show: {
       rotateX: 180,
-      transition: { type: "spring", duration: 1, bounce: 0.3 },
+      transition: {
+        type: "spring",
+        duration: 1,
+        bounce: 0.3,
+        delay: 0.5 * props.index,
+      },
     },
   };
   return (
@@ -32,8 +37,8 @@ const Front = (props) => {
         position: "absolute",
         top: 0,
         left: 0,
-        width: "inherit",
-        height: "inherit",
+        width: "100%",
+        height: "100%",
         backfaceVisibility: "hidden",
         zIndex: 10,
         display: "flex",
@@ -54,7 +59,12 @@ const Back = (props) => {
     },
     show: {
       rotateX: 0,
-      transition: { type: "spring", duration: 1, bounce: 0.3 },
+      transition: {
+        type: "spring",
+        duration: 1,
+        bounce: 0.3,
+        delay: 0.5 * props.index,
+      },
     },
   };
   return (
@@ -63,10 +73,9 @@ const Back = (props) => {
         position: "absolute",
         top: 0,
         left: 0,
-        width: "inherit",
-        height: "inherit",
+        width: "100%",
+        height: "100%",
         rotateX: 180,
-        backgroundColor: "#6aaa64",
         color: "white",
         backfaceVisibility: "hidden",
         display: "flex",
@@ -75,7 +84,13 @@ const Back = (props) => {
       }}
       variants={itemCounterSpinVariants}
     >
-      <motion.span animate={{ rotateX: 180 }}> {props.letter} </motion.span>
+      <motion.span
+        animate={{ rotateX: 180, backgroundColor: "#6aaa64" }}
+        transition={{ delay: 0.5 * props.index }}
+      >
+        {" "}
+        {props.letter}{" "}
+      </motion.span>
     </motion.div>
   );
 };
@@ -107,7 +122,12 @@ const OuterTile = (props) => {
     show: {
       rotateX: 180,
       scale: 1,
-      transition: { type: "spring", duration: 0.8, bounce: 0.3 },
+      transition: {
+        type: "spring",
+        duration: 0.8,
+        bounce: 0.3,
+        delay: 0.5 * props.index,
+      },
     },
   };
 
@@ -123,7 +143,11 @@ const OuterTile = (props) => {
       variants={props.attempted ? rowAttempted : rowNotAttempted}
     >
       {props.attempted ? (
-        <InnerTile letter={props.letter} attempted={props.attempted} />
+        <InnerTile
+          letter={props.letter}
+          attempted={props.attempted}
+          index={props.index}
+        />
       ) : (
         props.letter
       )}
@@ -133,7 +157,7 @@ const OuterTile = (props) => {
 
 const Letter = (props) => {
   return (
-    <div
+    <motion.div
       className={`${
         props.letter
           ? "h-14 w-14 flex grow shrink relative"
@@ -141,15 +165,19 @@ const Letter = (props) => {
       }`}
     >
       {props.letter && (
-        <OuterTile letter={props.letter} attempted={props.attempted} />
+        <OuterTile
+          letter={props.letter}
+          attempted={props.attempted}
+          index={props.index}
+        />
       )}
-    </div>
+    </motion.div>
   );
 };
 
 const LetterRow = (props) => {
   const container = {
-    hidden: { opacity: 1 },
+    // hidden: { opacity: 1 },
     show: {
       opacity: 1,
       transition: {
@@ -169,6 +197,7 @@ const LetterRow = (props) => {
       {Array.from(Array(5).keys()).map((number, index) => (
         <Letter
           key={number}
+          index={number}
           letter={props.letters[index]}
           answerLetter={props.answer[index]}
           attempted={props.attempted}
