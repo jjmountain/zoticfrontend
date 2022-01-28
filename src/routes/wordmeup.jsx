@@ -156,30 +156,60 @@ const OuterTile = (props) => {
 };
 
 const Letter = (props) => {
+  const letterState = () => {
+    if (props.letter && props.attempted) {
+      return "flip";
+    } else if (props.letter) {
+      return "show";
+    } else {
+      return "hidden";
+    }
+  };
+
+  console.log(letterState());
+
+  const letterVariant = {
+    hidden: {
+      scale: 0,
+      opacity: 0,
+    },
+    show: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 1,
+      },
+    },
+    flip: {
+      rotateX: 180,
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+      },
+    },
+  };
   return (
-    <motion.div
-      className={`${
-        props.letter
-          ? "h-14 w-14 flex grow shrink relative"
-          : "border border-gray-300 h-14 w-14 flex grow shrink relative"
-      }`}
-    >
-      {props.letter && (
-        <OuterTile
-          letter={props.letter}
-          attempted={props.attempted}
-          index={props.index}
-        />
-      )}
-    </motion.div>
+    <div className="border border-gray-300 h-14 w-14 flex grow shrink">
+      <motion.div
+        variants={letterVariant}
+        animate={letterState}
+        className={`${
+          props.letter
+            ? "border border-gray-700 h-full w-full flex justify-center items-center grow shrink relative text-xl"
+            : "border border-gray-300 h-full w-full flex grow shrink relative"
+        }`}
+      >
+        {props.letter}
+      </motion.div>
+    </div>
   );
 };
 
 const LetterRow = (props) => {
   const container = {
-    // hidden: { opacity: 1 },
-    show: {
-      opacity: 1,
+    hidden: { opacity: 1 },
+    flip: {
       transition: {
         staggerChildren: 0.5,
         delayChildren: 0.5,
@@ -190,8 +220,7 @@ const LetterRow = (props) => {
   return (
     <motion.div
       variants={container}
-      initial="hidden"
-      animate="show"
+      animate={props.attempted ? "flip" : "hidden"}
       className="grid grid-cols-5 gap-x-2 gap-y-4"
     >
       {Array.from(Array(5).keys()).map((number, index) => (
@@ -236,7 +265,7 @@ function Header() {
       className="mx-auto w-96"
     >
       <h1 className="mt-1 text-4xl text-black text-center font-bold uppercase tracking-wider">
-        Wordle But it's...
+        Wordle
       </h1>
     </div>
   );
