@@ -262,7 +262,16 @@ function Header() {
 }
 
 function KeyboardLetter(props) {
-  const usedLetter = props.used ? "bg-gray-400" : "bg-gray-200";
+  const answerValue = useContext(AnswerContext);
+
+  const determineColor = (letter) => {
+    if (answerValue.includes(props.letter)) {
+      return "green";
+    } else {
+      return "gray";
+    }
+  };
+
   return (
     <div
       onClick={() =>
@@ -270,7 +279,10 @@ function KeyboardLetter(props) {
           new KeyboardEvent("keyup", { key: props.letter.toLowerCase() })
         )
       }
-      className={`${usedLetter} cursor-pointer w-12 h-10 md:h-14 text-xs md:text-sm font-bold bg-gray-200 flex grow shrink items-center justify-center rounded-md m-1`}
+      className={`cursor-pointer w-12 h-10 md:h-14 text-xs md:text-sm font-bold bg-gray-200 flex grow shrink items-center justify-center rounded-md m-1`}
+      style={{
+        backgroundColor: props.used && determineColor(props.letter),
+      }}
     >
       {props.letter}
     </div>
@@ -278,15 +290,13 @@ function KeyboardLetter(props) {
 }
 
 function KeyboardLetters() {
+  const answerValue = useContext(AnswerContext);
   const lettersValue = useContext(WordsContext);
   const attemptsValue = useContext(AttemptsContext);
-
   // get arrays from letters value where corresponding indexes in attempts value are true
   const usedLetters = lettersValue.reduce(
     (previousValue, currentValue, index) => previousValue.concat(currentValue)
   );
-
-  console.log(usedLetters);
 
   // // make a new set with the array
   // const uniqueUsedLettersSet = new Set(usedLetters.split(""));
