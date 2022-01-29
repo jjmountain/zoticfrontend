@@ -245,7 +245,12 @@ function KeyboardLetter(props) {
   const usedLetter = props.used ? "bg-gray-400" : "bg-gray-200";
   return (
     <div
-      className={`${usedLetter} w-12 h-10 md:h-14 text-xs md:text-sm font-bold bg-gray-200 flex grow shrink items-center justify-center rounded-md m-1`}
+      onClick={() =>
+        document.dispatchEvent(
+          new KeyboardEvent("keyup", { key: props.letter.toLowerCase() })
+        )
+      }
+      className={`${usedLetter} cursor-pointer w-12 h-10 md:h-14 text-xs md:text-sm font-bold bg-gray-200 flex grow shrink items-center justify-center rounded-md m-1`}
     >
       {props.letter}
     </div>
@@ -257,14 +262,21 @@ function KeyboardLetters() {
   const attemptsValue = useContext(AttemptsContext);
 
   // get arrays from letters value where corresponding indexes in attempts value are true
-  const usedLetters = lettersValue.filter(
-    (word, index) => attemptsValue[index]
+  const usedLetters = lettersValue.reduce(
+    (previousValue, currentValue, index) => previousValue.concat(currentValue)
   );
-  // make a new set with the array
-  const uniqueUsedLettersSet = new Set(usedLetters);
-  // convert set into an arary with spread operator
-  const uniqueUsedLetters = [...uniqueUsedLettersSet].join("");
-  // join array into new string
+
+  console.log(usedLetters);
+
+  // // make a new set with the array
+  // const uniqueUsedLettersSet = new Set(usedLetters.split(""));
+
+  // // convert set into an arary with spread operator
+  // const uniqueUsedLetters = [...uniqueUsedLettersSet].join("");
+  // // console.log(uniqueUsedLetters);
+  // // join array into new string
+  // console.log(uniqueUsedLetters.includes("H"));
+
   return (
     <>
       <div className="w-full flex justify-center">
@@ -272,13 +284,17 @@ function KeyboardLetters() {
           <KeyboardLetter
             key={letter}
             letter={letter}
-            used={uniqueUsedLetters.includes(letter)}
+            used={usedLetters.includes(letter)}
           />
         ))}
       </div>
       <div className="w-full flex justify-center px-4">
         {ROWTWO.map((letter) => (
-          <KeyboardLetter key={letter} letter={letter} />
+          <KeyboardLetter
+            key={letter}
+            letter={letter}
+            used={usedLetters.includes(letter)}
+          />
         ))}
       </div>
       <div className="w-full flex justify-center">
@@ -286,7 +302,11 @@ function KeyboardLetters() {
           ENTER
         </div>
         {ROWTHREE.map((letter) => (
-          <KeyboardLetter key={letter} letter={letter} />
+          <KeyboardLetter
+            key={letter}
+            letter={letter}
+            used={usedLetters.includes(letter)}
+          />
         ))}
         <div className="w-12  h-10 md:h-14 text-sm font-bold bg-gray-200 flex-1 flex grow items-center justify-center rounded-md m-1">
           DEL
@@ -305,7 +325,7 @@ function Keyboard() {
 }
 
 export default function WordMeUp() {
-  const [answerState, setAnswerState] = useState("hello");
+  const [answerState, setAnswerState] = useState("HELLO");
 
   const [wordState, setWordState] = useState(["", "", "", "", "", ""]);
 
@@ -323,6 +343,7 @@ export default function WordMeUp() {
 
   const handleKeyUp = () => {
     document.addEventListener("keyup", (e) => {
+      console.log(e);
       if (
         validLetters.includes(e.key.toUpperCase()) &&
         currentWords.current[currentIndex.current].length < 5
@@ -336,7 +357,7 @@ export default function WordMeUp() {
           0,
           -1
         );
-        currentWords.current[currentIndex.current] = updatedWord;
+        currentWords.current[currentIndex.current] = updatedWord.toUpperCase();
         setWordState([...currentWords.current]);
       } else if (
         e.key === "Enter" &&
