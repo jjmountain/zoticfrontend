@@ -46,13 +46,13 @@ const LetterBack = (props) => {
   return (
     <>
       <motion.div
-        className="h-14 w-14"
+        className={`h-14 w-14`}
         style={{
           position: "absolute",
           top: 0,
           left: 0,
           rotateX: 180,
-          backgroundColor: "#6aaa64",
+          backgroundColor: props.color,
           color: "white",
           backfaceVisibility: "hidden",
           display: "flex",
@@ -140,6 +140,8 @@ const Letter = (props) => {
       scale: 1,
       opacity: 1,
       transition: {
+        type: "spring",
+        bounce: 0.7,
         duration: 0.5,
       },
     },
@@ -170,13 +172,29 @@ const Letter = (props) => {
         }`}
       >
         <LetterFront letter={props.letter} attempted={props.attempted} />
-        <LetterBack letter={props.letter} attempted={props.attempted} />
+        <LetterBack
+          letter={props.letter}
+          attempted={props.attempted}
+          color={props.color}
+        />
       </motion.div>
     </div>
   );
 };
 
 const LetterRow = (props) => {
+  // create a function that takes in the letter as an argument and returns the color if attempted, otherwise return empty string
+
+  const determineColor = (letter, index) => {
+    if (letter === props.answer[index]) {
+      return "green";
+    } else if (props.answer.includes(letter)) {
+      return "orange";
+    } else {
+      return "gray";
+    }
+  };
+
   const container = {
     hidden: { opacity: 1 },
     flip: {
@@ -200,6 +218,7 @@ const LetterRow = (props) => {
           letter={props.letters[index]}
           answerLetter={props.answer[index]}
           attempted={props.attempted}
+          color={props.attempted && determineColor(props.letters[index], index)}
         />
       ))}
     </motion.div>
@@ -216,6 +235,7 @@ function GameBox() {
       {Array.from(Array(6).keys()).map((number, index) => (
         <LetterRow
           key={number}
+          index={number}
           answer={answerValue}
           letters={lettersValue[index]}
           attempted={attemptsValue[index]}
