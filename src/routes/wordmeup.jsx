@@ -31,8 +31,23 @@ const LetterBack = (props) => {
     hidden: {
       opacity: 0,
     },
+    show: {
+      opacity: 0,
+    },
     flip: {
       rotateX: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+      },
+    },
+  };
+
+  const innerVariants = {
+    hidden: {
+      opacity: 0,
+    },
+    flip: {
       opacity: 1,
       transition: {
         duration: 0.6,
@@ -59,10 +74,59 @@ const LetterBack = (props) => {
         variants={itemCounterSpinVariants}
         animate={letterState}
       >
-        <motion.span animate={{ rotateX: 180 }}>
-          {" "}
-          {props.attempted && props.letter}{" "}
-        </motion.span>
+        <motion.span animate={{ rotateX: 180 }}> {props.letter} </motion.span>
+      </motion.div>
+    </>
+  );
+};
+
+const LetterFront = (props) => {
+  const letterState = () => {
+    if (props.letter && props.attempted) {
+      return "flip";
+    } else if (props.letter) {
+      return "show";
+    } else {
+      return "hidden";
+    }
+  };
+
+  const itemSpinVariants = {
+    hidden: {
+      rotateX: 0,
+      scale: 0,
+    },
+    show: {
+      rotateX: 0,
+      scale: 1,
+    },
+    flip: {
+      rotateX: 180,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+      },
+    },
+  };
+
+  return (
+    <>
+      <motion.div
+        className="h-14 w-14 border-gray-500 border"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          color: "black",
+          backfaceVisibility: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        variants={itemSpinVariants}
+        animate={letterState}
+      >
+        {props.letter}
       </motion.div>
     </>
   );
@@ -101,18 +165,25 @@ const Letter = (props) => {
     },
   };
   return (
-    <div className="border border-gray-300 h-14 w-14 flex grow shrink">
+    <div
+      className={`${
+        props.letter
+          ? "h-14 w-14 flex justify-center grow shrink"
+          : "border border-gray-300 h-14 w-14 flex justify-center grow shrink"
+      }`}
+    >
       <motion.div
         variants={letterVariant}
         animate={letterState}
         // style={{ backfaceVisibility: "hidden" }}
         className={`${
-          props.letter
-            ? "h-full w-full flex justify-center items-center grow shrink relative text-xl"
-            : "border border-gray-300 h-full w-full flex grow shrink relative"
+          letterState === "show"
+            ? "h-full w-full flex border border-gray-500 justify-center items-center grow shrink relative text-xl"
+            : "h-full w-full flex justify-center items-center grow shrink relative text-xl"
         }`}
       >
-        {props.letter}
+        <LetterFront letter={props.letter} attempted={props.attempted} />
+
         <LetterBack letter={props.letter} attempted={props.attempted} />
       </motion.div>
     </div>
