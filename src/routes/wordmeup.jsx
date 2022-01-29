@@ -43,18 +43,6 @@ const LetterBack = (props) => {
     },
   };
 
-  const innerVariants = {
-    hidden: {
-      opacity: 0,
-    },
-    flip: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-      },
-    },
-  };
-
   return (
     <>
       <motion.div
@@ -175,7 +163,6 @@ const Letter = (props) => {
       <motion.div
         variants={letterVariant}
         animate={letterState}
-        // style={{ backfaceVisibility: "hidden" }}
         className={`${
           letterState === "show"
             ? "h-full w-full flex border border-gray-500 justify-center items-center grow shrink relative text-xl"
@@ -183,7 +170,6 @@ const Letter = (props) => {
         }`}
       >
         <LetterFront letter={props.letter} attempted={props.attempted} />
-
         <LetterBack letter={props.letter} attempted={props.attempted} />
       </motion.div>
     </div>
@@ -256,19 +242,38 @@ function Header() {
 }
 
 function KeyboardLetter(props) {
+  const usedLetter = props.used ? "bg-gray-400" : "bg-gray-200";
   return (
-    <div className="w-12 h-10 md:h-14 text-xs md:text-sm font-bold bg-gray-200 flex grow shrink items-center justify-center rounded-md m-1">
+    <div
+      className={`${usedLetter} w-12 h-10 md:h-14 text-xs md:text-sm font-bold bg-gray-200 flex grow shrink items-center justify-center rounded-md m-1`}
+    >
       {props.letter}
     </div>
   );
 }
 
 function KeyboardLetters() {
+  const lettersValue = useContext(WordsContext);
+  const attemptsValue = useContext(AttemptsContext);
+
+  // get arrays from letters value where corresponding indexes in attempts value are true
+  const usedLetters = lettersValue.filter(
+    (word, index) => attemptsValue[index]
+  );
+  // make a new set with the array
+  const uniqueUsedLettersSet = new Set(usedLetters);
+  // convert set into an arary with spread operator
+  const uniqueUsedLetters = [...uniqueUsedLettersSet].join("");
+  // join array into new string
   return (
     <>
       <div className="w-full flex justify-center">
         {ROWONE.map((letter) => (
-          <KeyboardLetter key={letter} letter={letter} />
+          <KeyboardLetter
+            key={letter}
+            letter={letter}
+            used={uniqueUsedLetters.includes(letter)}
+          />
         ))}
       </div>
       <div className="w-full flex justify-center px-4">
@@ -323,7 +328,9 @@ export default function WordMeUp() {
         currentWords.current[currentIndex.current].length < 5
       ) {
         currentWords.current[currentIndex.current] += e.key;
-        setWordState([...currentWords.current]);
+        setWordState(
+          [...currentWords.current].map((word) => word.toUpperCase())
+        );
       } else if (e.key === "Backspace") {
         const updatedWord = currentWords.current[currentIndex.current].slice(
           0,
@@ -339,8 +346,6 @@ export default function WordMeUp() {
       }
     });
   };
-
-  const prevAttempts = usePrevious(attemptsState);
 
   function CheckWord() {
     // make an array where up to the current index everything is true
