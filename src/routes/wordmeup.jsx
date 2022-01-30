@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, createContext } from "react";
 import { usePrevious } from "../hooks/usePrevious";
+import wordData from "../data/english_words.json";
+
+import { solution_definition, solution_word } from "../lib/words";
 
 import { motion } from "framer-motion";
 import React from "react";
@@ -355,11 +358,11 @@ function Keyboard() {
 }
 
 export default function WordMeUp() {
-  const [answerState, setAnswerState] = useState("HELLO");
+  const createBlankArray = (length) => [...Array(length)].map((element) => "");
 
-  const [wordState, setWordState] = useState(["", "", "", "", "", ""]);
+  const [answerState] = useState(solution_word);
 
-  const currentWords = useRef(["", "", "", "", "", ""]);
+  const [wordState, setWordState] = useState(createBlankArray(6));
 
   const [attemptsState, setAttemptsState] = useState([
     false,
@@ -369,29 +372,32 @@ export default function WordMeUp() {
     false,
   ]);
 
-  const currentIndex = useRef(0);
+  const [currentAttempt, setCurrentAttempt] = useState(0);
+
+  const prevWordState = usePrevious(wordState);
+
+  const currentAttemptIndexRef = useRef(0);
+
+  let currentAttemptIndex = currentAttemptIndexRef.current;
+
+  console.log("attempt", currentAttemptIndex);
 
   const handleKeyUp = () => {
     document.addEventListener("keyup", (e) => {
-      console.log(e);
+      console.log("wordState", wordState);
+      console.log("currentattemptindex", currentAttemptIndex);
+      console.log("in first if statement", wordState[currentAttemptIndex]);
       if (
         validLetters.includes(e.key.toUpperCase()) &&
-        currentWords.current[currentIndex.current].length < 5
+        wordState[currentAttemptIndex].length < 5
       ) {
-        currentWords.current[currentIndex.current] += e.key;
-        setWordState(
-          [...currentWords.current].map((word) => word.toUpperCase())
-        );
+        prevWordState[currentAttemptIndex] += e.key.toUpperCase();
+        setWordState(prevWordState.map((word) => word));
       } else if (e.key === "Backspace") {
-        const updatedWord = currentWords.current[currentIndex.current].slice(
-          0,
-          -1
-        );
-        currentWords.current[currentIndex.current] = updatedWord.toUpperCase();
-        setWordState([...currentWords.current]);
+        setWordState([...prevWordState]);
       } else if (
         e.key === "Enter" &&
-        currentWords.current[currentIndex.current].length === 5
+        prevWordState[currentAttemptIndex].length === 5
       ) {
         CheckWord();
       }
@@ -400,19 +406,33 @@ export default function WordMeUp() {
 
   function CheckWord() {
     // make an array where up to the current index everything is true
-    const wordsComplete = currentWords.current.map(
-      (word, index) => index <= currentIndex.current
+    const wordsComplete = prevWordState.map(
+      (word, index) => index <= currentAttemptIndex
     );
     setAttemptsState(wordsComplete);
-    // setAttemptsState(prevAttempts[currentIndex.current]);
-    if (currentWords.current[currentIndex.current] === answerState) {
+    // setAttemptsState(prevAttempts[currentAttemptIndex]);
+    if (prevWordState[currentAttemptIndex] === answerState) {
       console.log("Correct!");
     } else {
-      console.log("Wrong!", currentWords);
+      console.log("Wrong!");
+    }
+    if (currentAttemptIndex < 5) {
+      // update the attempts index instance variable
+      currentAttemptIndex += 1;
+
+      const newAttemptsState = attemptsState.map(
+        (attempt, index) => index < currentAttemptIndex
+      );
+
+      setAttemptsState(newAttemptsState);
     }
   }
 
   useEffect(() => handleKeyUp(), []);
+
+  // const WordsContext = createContext();
+
+  // function WordsProvider({ children }) {}
 
   return (
     <AnswerContext.Provider value={answerState}>
