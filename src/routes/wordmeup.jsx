@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useContext, createContext } from "react";
 import { usePrevious } from "../hooks/usePrevious";
 import wordData from "../data/english_words.json";
+import flag from "../ukflag.svg";
 
 import { solution_definition, solution_word } from "../lib/words";
 
@@ -161,8 +162,8 @@ const Letter = (props) => {
     <div
       className={`${
         props.letter
-          ? "h-14 w-14 flex justify-center grow shrink"
-          : "border border-gray-300 h-14 w-14 flex justify-center grow shrink"
+          ? "h-14 w-14 flex justify-center grow shrink mx-1"
+          : "border border-gray-300 h-14 w-14 flex justify-center grow shrink mx-1"
       }`}
     >
       <motion.div
@@ -212,7 +213,7 @@ const LetterRow = (props) => {
     <motion.div
       variants={container}
       animate={props.attempted ? "flip" : "hidden"}
-      className={`grid grid-cols-${solution_word.length} gap-x-2 gap-y-4`}
+      className={`flex justify-between mt-1`}
     >
       {Array.from(Array(solution_word.length).keys()).map((number, index) => (
         <Letter
@@ -234,7 +235,7 @@ function GameBox() {
   const attemptsValue = useContext(AttemptsContext);
 
   return (
-    <div className="flex justify-center grid grid-rows-5 gap-1 m-4">
+    <div className="flex flex-row justify-center grid grid-rows-5 gap-1 m-4">
       {Array.from(Array(6).keys()).map((number, index) => (
         <LetterRow
           key={number}
@@ -254,6 +255,7 @@ function Header() {
       style={{
         borderBottom: "solid 1px #d3d6da",
         maxWidth: "100vw",
+        backgroundImage: flag,
       }}
       className="mx-auto w-96"
     >
