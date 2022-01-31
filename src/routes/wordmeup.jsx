@@ -378,7 +378,11 @@ export default function WordMeUp() {
 
   const [currentAttempt, setCurrentAttempt] = useState(0);
 
-  const prevWordState = usePrevious(wordState);
+  const prevWordStateRef = useRef(createBlankArray(solution_word.length));
+
+  let prevWordState = prevWordStateRef.current;
+
+  console.log("previous word state", prevWordState);
 
   const currentAttemptIndexRef = useRef(0);
 
@@ -391,8 +395,13 @@ export default function WordMeUp() {
         wordState[currentAttemptIndex].length < solution_word.length
       ) {
         prevWordState[currentAttemptIndex] += e.key.toUpperCase();
-        setWordState(prevWordState.map((word) => word));
+        setWordState([...prevWordState]);
       } else if (e.key === "Backspace") {
+        const updatedWord = [...prevWordState][currentAttemptIndex].slice(
+          0,
+          -1
+        );
+        prevWordState[currentAttemptIndex] = updatedWord;
         setWordState([...prevWordState]);
       } else if (
         e.key === "Enter" &&
