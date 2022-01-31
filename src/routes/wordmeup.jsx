@@ -41,7 +41,7 @@ const LetterBack = (props) => {
       rotateX: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.4,
       },
     },
   };
@@ -95,7 +95,7 @@ const LetterFront = (props) => {
       rotateX: 180,
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.4,
       },
     },
   };
@@ -153,7 +153,7 @@ const Letter = (props) => {
       scale: 1,
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.4,
       },
     },
   };
@@ -202,8 +202,8 @@ const LetterRow = (props) => {
     hidden: { opacity: 1 },
     flip: {
       transition: {
-        staggerChildren: 0.5,
-        delayChildren: 0.5,
+        staggerChildren: 0.4,
+        // delayChildren: 0.5,
       },
     },
   };
@@ -212,9 +212,9 @@ const LetterRow = (props) => {
     <motion.div
       variants={container}
       animate={props.attempted ? "flip" : "hidden"}
-      className="grid grid-cols-5 gap-x-2 gap-y-4"
+      className={`grid grid-cols-${solution_word.length} gap-x-2 gap-y-4`}
     >
-      {Array.from(Array(5).keys()).map((number, index) => (
+      {Array.from(Array(solution_word.length).keys()).map((number, index) => (
         <Letter
           key={number}
           index={number}
@@ -258,7 +258,7 @@ function Header() {
       className="mx-auto w-96"
     >
       <h1 className="mt-1 text-4xl text-black text-center font-bold uppercase tracking-wider">
-        Wordle
+        Britle
       </h1>
     </div>
   );
@@ -362,7 +362,9 @@ export default function WordMeUp() {
 
   const [answerState] = useState(solution_word);
 
-  const [wordState, setWordState] = useState(createBlankArray(6));
+  const [wordState, setWordState] = useState(
+    createBlankArray(solution_word.length)
+  );
 
   const [attemptsState, setAttemptsState] = useState([
     false,
@@ -380,16 +382,11 @@ export default function WordMeUp() {
 
   let currentAttemptIndex = currentAttemptIndexRef.current;
 
-  console.log("attempt", currentAttemptIndex);
-
   const handleKeyUp = () => {
     document.addEventListener("keyup", (e) => {
-      console.log("wordState", wordState);
-      console.log("currentattemptindex", currentAttemptIndex);
-      console.log("in first if statement", wordState[currentAttemptIndex]);
       if (
         validLetters.includes(e.key.toUpperCase()) &&
-        wordState[currentAttemptIndex].length < 5
+        wordState[currentAttemptIndex].length < solution_word.length
       ) {
         prevWordState[currentAttemptIndex] += e.key.toUpperCase();
         setWordState(prevWordState.map((word) => word));
@@ -397,7 +394,7 @@ export default function WordMeUp() {
         setWordState([...prevWordState]);
       } else if (
         e.key === "Enter" &&
-        prevWordState[currentAttemptIndex].length === 5
+        prevWordState[currentAttemptIndex].length === solution_word.length
       ) {
         CheckWord();
       }
