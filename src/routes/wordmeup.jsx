@@ -382,8 +382,6 @@ export default function WordMeUp() {
 
   let prevWordState = prevWordStateRef.current;
 
-  console.log("previous word state", prevWordState);
-
   const currentAttemptIndexRef = useRef(0);
 
   let currentAttemptIndex = currentAttemptIndexRef.current;
@@ -392,9 +390,11 @@ export default function WordMeUp() {
     document.addEventListener("keyup", (e) => {
       if (
         validLetters.includes(e.key.toUpperCase()) &&
-        wordState[currentAttemptIndex].length < solution_word.length
+        prevWordState[currentAttemptIndex].length < solution_word.length
       ) {
-        prevWordState[currentAttemptIndex] += e.key.toUpperCase();
+        const updatedWord =
+          [...prevWordState][currentAttemptIndex] + e.key.toUpperCase();
+        prevWordState[currentAttemptIndex] = updatedWord;
         setWordState([...prevWordState]);
       } else if (e.key === "Backspace") {
         const updatedWord = [...prevWordState][currentAttemptIndex].slice(
