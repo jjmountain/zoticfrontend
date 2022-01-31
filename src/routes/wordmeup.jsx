@@ -191,9 +191,9 @@ const LetterRow = (props) => {
 
   const determineColor = (letter, index) => {
     if (letter === props.answer[index]) {
-      return "green";
+      return "#5F8D41";
     } else if (props.answer.includes(letter)) {
-      return "orange";
+      return "#C4A240";
     } else {
       return "gray";
     }
@@ -253,13 +253,12 @@ function Header() {
   return (
     <div
       style={{
-        borderBottom: "solid 1px #d3d6da",
+        borderBottom: "solid 1px #CA0529",
         maxWidth: "100vw",
-        backgroundImage: flag,
       }}
       className="mx-auto w-96"
     >
-      <h1 className="mt-1 text-4xl text-black text-center font-bold uppercase tracking-wider">
+      <h1 className="[color:#002379] mt-1 text-4xl text-center font-black uppercase tracking-wider">
         Britle
       </h1>
     </div>
@@ -271,7 +270,7 @@ function KeyboardLetter(props) {
 
   const determineColor = (letter) => {
     if (answerValue.includes(props.letter)) {
-      return "green";
+      return "#5F8D41";
     } else {
       return "gray";
     }

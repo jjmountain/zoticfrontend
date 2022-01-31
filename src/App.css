@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.main-logo {
+  font-size: 6rem;
+  background: url('ukflag.jpeg');
+  background-position: bottom;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+}
