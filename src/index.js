@@ -1,13 +1,15 @@
-import React from 'react';
-import AppRouter from './AppRouter';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import AppRouter from "./AppRouter";
+import ReactDOM from "react-dom";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import DataProvider from "./hooks/word-hooks";
 
 ReactDOM.render(
-    <AppRouter />,
-  document.getElementById('root')
+  <DataProvider>
+    <AppRouter />
+  </DataProvider>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

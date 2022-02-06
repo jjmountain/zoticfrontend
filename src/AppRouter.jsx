@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import Articles from "./routes/articles";
 import Article from "./routes/article";
-import WordMeUp from "./routes/wordmeup";
+import Britle from "./routes/britle";
 import { UserContext } from "./UserContext";
 import { LoadingContext } from "./LoadingContext";
 
@@ -17,7 +17,7 @@ export default function AppRouter() {
         <LoadingContext.Provider value={loadingValue}>
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="word-me-up" element={<WordMeUp />} />
+            <Route path="britle" element={<Britle />} />
             <Route path="articles">
               <Route index element={<Articles />} />
               <Route path=":id" element={<Article />} />

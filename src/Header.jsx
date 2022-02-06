@@ -1,5 +1,5 @@
 import React from "react";
-import parrot from "../icons8-parrot-96.png";
+import parrot from "./icons8-parrot-96.png";
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";

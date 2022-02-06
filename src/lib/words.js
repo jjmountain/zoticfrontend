@@ -2,6 +2,14 @@ import wordData from "../data/english_words.json";
 
 const WORDS = JSON.parse(JSON.stringify(wordData));
 
+export const ROWONE = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
+
+export const ROWTWO = ["A", "S", "D", "F", "G", "H", "J", "K", "L"];
+
+export const ROWTHREE = ["Z", "X", "C", "V", "B", "N", "M"];
+
+export const VALIDLETTERS = [...ROWONE, ...ROWTWO, ...ROWTHREE];
+
 const getWordOfDay = () => {
   // January 1, 2022 Game Epoch
   const epochMs = new Date("January 30, 2022 00:00:00").valueOf();
@@ -20,3 +28,6 @@ const getWordOfDay = () => {
 
 export const { solution_word, solution_definition, solutionIndex, tomorrow } =
   getWordOfDay();
+
+export const createArray = (length, value = false) =>
+  [...Array(length)].map(() => value);
