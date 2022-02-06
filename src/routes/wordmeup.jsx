@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef, useContext, createContext } from "react";
 import { usePrevious } from "../hooks/usePrevious";
 import wordData from "../data/english_words.json";
-import flag from "../ukflag.svg";
 
 import { solution_definition, solution_word } from "../lib/words";
 
 import { motion } from "framer-motion";
 import React from "react";
 
+console.log(solution_word);
 const ROWONE = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
 
 const ROWTWO = ["A", "S", "D", "F", "G", "H", "J", "K", "L"];
@@ -66,7 +66,10 @@ const LetterBack = (props) => {
         variants={itemCounterSpinVariants}
         animate={letterState}
       >
-        <motion.span animate={{ rotateX: 180 }}> {props.letter} </motion.span>
+        <motion.span className="font-bold text-3xl" animate={{ rotateX: 180 }}>
+          {" "}
+          {props.letter}{" "}
+        </motion.span>
       </motion.div>
     </>
   );
@@ -104,12 +107,11 @@ const LetterFront = (props) => {
   return (
     <>
       <motion.div
-        className="h-14 w-14 border-gray-500 border"
+        className="h-14 w-14 border-gray-500 border font-bold text-3xl text-gray-600"
         style={{
           position: "absolute",
           top: 0,
           left: 0,
-          color: "black",
           backfaceVisibility: "hidden",
           display: "flex",
           justifyContent: "center",
@@ -162,8 +164,8 @@ const Letter = (props) => {
     <div
       className={`${
         props.letter
-          ? "h-14 w-14 flex justify-center grow shrink mx-1"
-          : "border border-gray-300 h-14 w-14 flex justify-center grow shrink mx-1"
+          ? "h-14 w-14 flex justify-center grow shrink mx-0.5"
+          : "border border-gray-300 h-14 w-14 flex justify-center grow shrink mx-0.5 "
       }`}
     >
       <motion.div
@@ -171,7 +173,7 @@ const Letter = (props) => {
         animate={letterState}
         className={`${
           letterState === "show"
-            ? "h-full w-full flex border border-gray-500 justify-center items-center grow shrink relative text-xl"
+            ? "h-full w-full flex border border-gray-500 justify-center items-center grow shrink relative text-xl font-semiboldtext-gray-700"
             : "h-full w-full flex justify-center items-center grow shrink relative text-xl"
         }`}
       >
@@ -195,7 +197,7 @@ const LetterRow = (props) => {
     } else if (props.answer.includes(letter)) {
       return "#C4A240";
     } else {
-      return "gray";
+      return "#787C7E";
     }
   };
 
@@ -213,7 +215,7 @@ const LetterRow = (props) => {
     <motion.div
       variants={container}
       animate={props.attempted ? "flip" : "hidden"}
-      className={`flex justify-between mt-1`}
+      className={`flex justify-between mt-0.5`}
     >
       {Array.from(Array(solution_word.length).keys()).map((number, index) => (
         <Letter
@@ -253,12 +255,12 @@ function Header() {
   return (
     <div
       style={{
-        borderBottom: "solid 1px #CA0529",
+        borderBottom: "solid 2px #CA0529",
         maxWidth: "100vw",
       }}
       className="mx-auto w-96"
     >
-      <h1 className="[color:#002379] mt-1 text-4xl text-center font-black uppercase tracking-wider">
+      <h1 className="text-slate-50 mt-1 text-4xl text-center font-black uppercase tracking-wider">
         Britle
       </h1>
     </div>
@@ -298,9 +300,25 @@ function KeyboardLetters() {
   const lettersValue = useContext(WordsContext);
   const attemptsValue = useContext(AttemptsContext);
   // get arrays from letters value where corresponding indexes in attempts value are true
-  const usedLetters = lettersValue.reduce(
-    (previousValue, currentValue, index) => previousValue.concat(currentValue)
+
+  // get all the letters that have been confirmed
+
+  const usedLettersValue = attemptsValue.filter((value, index) => value);
+
+  const lettersToTest = usedLettersValue.map(
+    (value, index) => lettersValue[index]
   );
+
+  console.log("letters to test", lettersToTest);
+  console.log("lettersValue", lettersValue);
+
+  let usedLetters = [];
+
+  if (lettersToTest.length) {
+    usedLetters = lettersToTest.reduce((previousValue, currentValue, index) =>
+      previousValue.concat(currentValue)
+    );
+  }
 
   // // make a new set with the array
   // const uniqueUsedLettersSet = new Set(usedLetters.split(""));
@@ -445,7 +463,15 @@ export default function WordMeUp() {
     <AnswerContext.Provider value={answerState}>
       <WordsContext.Provider value={wordState}>
         <AttemptsContext.Provider value={attemptsState}>
-          <div className="max-w-3xl mx-auto h-screen flex flex-col justify-between py-4">
+          <div
+            style={{
+              backgroundColor: "white",
+              backgroundImage: "url(../Mod_symbol.svg)",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "contain",
+            }}
+            className="max-w-3xl mx-auto h-screen flex flex-col justify-between py-4 bg-white"
+          >
             <Header />
             <GameBox />
             <Keyboard />

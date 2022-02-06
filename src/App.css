@@ -39,9 +39,8 @@
 
 .main-logo {
   font-size: 6rem;
-  background: url('ukflag.jpeg');
+  background: url("Mod_symbol.svg");
   background-position: bottom;
   -webkit-background-clip: text;
   color: transparent;
-}
 }

@@ -54,9 +54,9 @@
     @apply text-sm mt-2;
   }
 
-  body {
+  /* body {
     @apply bg-zinc-50;
-  }
+  } */
 }
 
 @layer utilities {
