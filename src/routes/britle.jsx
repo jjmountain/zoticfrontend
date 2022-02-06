@@ -248,28 +248,27 @@ export default function Britle() {
 
   const handleKeyUp = () => {
     document.addEventListener("keyup", (e) => {
-      console.log(
-        prevWordState,
-        prevWordState[currentAttemptIndex].length < solution_word.length
-      );
+      console.log("current attempt index in britle", currentAttemptIndex());
       if (
         VALIDLETTERS.includes(e.key.toUpperCase()) &&
-        prevWordState[currentAttemptIndex].length < solution_word.length
+        prevWordState[currentAttemptIndex()].length < solution_word.length
       ) {
         const updatedWord =
-          [...prevWordState][currentAttemptIndex] + e.key.toUpperCase();
-        prevWordState[currentAttemptIndex] = updatedWord;
+          [...prevWordState][currentAttemptIndex()] + e.key.toUpperCase();
+        console.log(updatedWord);
+        prevWordState[currentAttemptIndex()] = updatedWord;
+
         setWordState([...prevWordState]);
       } else if (e.key === "Backspace") {
-        const updatedWord = [...prevWordState][currentAttemptIndex].slice(
+        const updatedWord = [...prevWordState][currentAttemptIndex()].slice(
           0,
           -1
         );
-        prevWordState[currentAttemptIndex] = updatedWord;
+        prevWordState[currentAttemptIndex()] = updatedWord;
         setWordState([...prevWordState]);
       } else if (
         e.key === "Enter" &&
-        prevWordState[currentAttemptIndex].length === solution_word.length
+        prevWordState[currentAttemptIndex()].length === solution_word.length
       ) {
         checkWord();
       }

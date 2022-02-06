@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useMemo } from "react";
 import { useContext, useRef } from "react/cjs/react.development";
 import { solution_word, createArray } from "../lib/words";
 
@@ -11,9 +11,26 @@ export default function DataProvider({ children }) {
 
   let prevWordState = prevWordStateRef.current;
 
-  const currentAttemptIndexRef = useRef(0);
+  // const currentAttemptIndexRef = useRef(0);
 
-  let currentAttemptIndex = currentAttemptIndexRef.current;
+  // let currentAttemptIndex = currentAttemptIndexRef.current;
+
+  const [attemptsState, setAttemptsState] = useState(createArray(5));
+
+  const [rowAnimationState, setRowAnimationState] = useState(createArray(5));
+
+  const currentAttemptIndex = () => {
+    return [...attemptsState].findIndex((el) => el === false);
+  };
+
+  console.log("current attempts index", currentAttemptIndex());
+
+  const incrementAttemptState = () => {
+    const newAttemptsState = [...attemptsState].map((el, index) =>
+      index === currentAttemptIndex() ? true : el
+    );
+    setAttemptsState(newAttemptsState);
+  };
 
   const [answer] = useState(solution_word);
 
@@ -24,30 +41,20 @@ export default function DataProvider({ children }) {
   const checkWord = () => {
     // make an array where up to the current index everything is true
     const wordsComplete = prevWordState.map(
-      (word, index) => index <= currentAttemptIndex
+      (word, index) => index <= currentAttemptIndex()
     );
     setAttemptsState(wordsComplete);
-    // setAttemptsState(prevAttempts[currentAttemptIndex]);
-    if (prevWordState[currentAttemptIndex] === answer) {
+    // setAttemptsState(prevAttempts[currentAttemptIndex()]);
+    if (prevWordState[currentAttemptIndex()] === answer) {
       console.log("Correct!");
     } else {
       console.log("Wrong!");
     }
-    if (currentAttemptIndex < 5) {
+    if (currentAttemptIndex() < 5) {
       // update the attempts index instance variable
-      currentAttemptIndex += 1;
-
-      const newAttemptsState = attemptsState.map(
-        (attempt, index) => index < currentAttemptIndex
-      );
-
-      setAttemptsState(newAttemptsState);
+      incrementAttemptState();
     }
   };
-
-  const [attemptsState, setAttemptsState] = useState(createArray(5));
-
-  const [rowAnimationState, setRowAnimationState] = useState(createArray(5));
 
   return (
     <DataContext.Provider
@@ -58,6 +65,7 @@ export default function DataProvider({ children }) {
         rowAnimationState,
         prevWordState,
         currentAttemptIndex,
+        incrementAttemptState,
         checkWord,
         setWordState,
         setAttemptsState,
